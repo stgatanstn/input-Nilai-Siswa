@@ -6,22 +6,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _nilaiController = TextEditingController();
+  final TextEditingController _nilaiController1 = TextEditingController();
+  final TextEditingController _nilaiController2 = TextEditingController();
+  final TextEditingController _nilaiController3 = TextEditingController();
   String _kategori = '';
+  double _rataRata = 0.0;
 
   void _hitungKategori() {
-    final String input = _nilaiController.text;
-    final int? nilai = int.tryParse(input);
+    final String input1 = _nilaiController1.text;
+    final String input2 = _nilaiController2.text;
+    final String input3 = _nilaiController3.text;
 
-    if (nilai == null || nilai < 0 || nilai > 100) {
+    final int? nilai1 = int.tryParse(input1);
+    final int? nilai2 = int.tryParse(input2);
+    final int? nilai3 = int.tryParse(input3);
+
+    if (nilai1 == null ||
+        nilai1 < 0 ||
+        nilai1 > 100 ||
+        nilai2 == null ||
+        nilai2 < 0 ||
+        nilai2 > 100 ||
+        nilai3 == null ||
+        nilai3 < 0 ||
+        nilai3 > 100) {
       _showErrorDialog();
     } else {
       setState(() {
-        if (nilai >= 85) {
+        _rataRata = (nilai1 + nilai2 + nilai3) / 3;
+
+        if (_rataRata >= 85) {
           _kategori = 'A';
-        } else if (nilai >= 70) {
+        } else if (_rataRata >= 70) {
           _kategori = 'B';
-        } else if (nilai >= 55) {
+        } else if (_rataRata >= 55) {
           _kategori = 'C';
         } else {
           _kategori = 'D';
@@ -36,7 +54,8 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Input Tidak Valid'),
-          content: Text('Masukkan nilai antara 0 hingga 100.'),
+          content:
+              Text('Masukkan nilai antara 0 hingga 100 untuk semua kolom.'),
           actions: [
             TextButton(
               child: Text('OK'),
@@ -55,18 +74,36 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Penilaian Siswa'),
+        title: Text('Rata - Rata Nilai Siswa'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextField(
-                controller: _nilaiController,
+                controller: _nilaiController1,
                 decoration: InputDecoration(
-                  labelText: 'Masukkan Nilai Siswa (0-100)',
+                  labelText: 'Masukkan Nilai 1 (0-100)',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _nilaiController2,
+                decoration: InputDecoration(
+                  labelText: 'Masukkan Nilai 2 (0-100)',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _nilaiController3,
+                decoration: InputDecoration(
+                  labelText: 'Masukkan Nilai 3 (0-100)',
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -78,7 +115,11 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
               Text(
-                _kategori.isEmpty ? '' : 'Kategori: $_kategori',
+                'Rata-rata: ${_rataRata.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 24),
+              ),
+              Text(
+                'Kategori: $_kategori',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ],
